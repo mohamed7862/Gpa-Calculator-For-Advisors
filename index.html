@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPA Calculator - Academic Advisor</title>
+    <link rel="stylesheet" href="gpa.css">
+</head>
+<body>
+
+    <!-- 1. شاشة تسجيل الدخول / إنشاء حساب (تظهر لو المرشد مش عامل Login) -->
+    <div id="auth-container" style="max-width: 400px; margin: 50px auto; padding: 25px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center;">
+        <h2 id="auth-title" style="color: #0984e3; margin-bottom: 20px;">👨‍🏫 Academic Advisor Login</h2>
+        
+        <input type="email" id="auth-email" placeholder="Advisor Email" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px;">
+        <input type="password" id="auth-password" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px;">
+        
+        <div style="display: flex; gap: 10px;">
+            <button onclick="loginAdvisor()" style="flex: 1; background: #0984e3; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold;">Login</button>
+            <button onclick="registerAdvisor()" style="flex: 1; background: #2ed573; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold;">Register</button>
+        </div>
+        <p id="auth-error" style="color: red; font-size: 13px; margin-top: 10px; display: none;"></p>
+    </div>
+
+    <!-- 2. محتوى الآلة الحاسبة (مخفي لحين تسجيل الدخول) -->
+    <div id="app-container" class="container" style="display: none;">
+        
+        <!-- بار رأس الصفحة (إظهار إيميل المرشد + زرار Logout) -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #2c3e50; color: white; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px;">
+            <span id="advisor-email-display" style="font-size: 14px; font-weight: bold;">📧 Advisor: ...</span>
+            <div>
+                <button onclick="toggleLanguage()" id="lang-btn" style="width: auto; padding: 4px 10px; background: #555; color: white; font-size: 12px; margin: 0 5px;">العربية</button>
+                <button onclick="logoutAdvisor()" style="width: auto; padding: 4px 10px; background: #ff4d4d; color: white; font-size: 12px; margin: 0;">Logout 🚪</button>
+            </div>
+        </div>
+
+        <h1 id="main-title">GPA Calculator</h1>
+
+        <!-- قسم المرشد الأكاديمي -->
+        <div class="student-info-section" style="background: rgba(0, 128, 255, 0.08); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed #0984e3;">
+            <h3 id="advisor-heading" style="margin-top: 0; color: #0984e3; font-size: 16px;">👨‍🏫 Academic Advisor - Student Info</h3>
+            <div class="form-group" style="margin-bottom: 10px;">
+                <input type="text" id="student-name" placeholder="Student Name" style="flex: 2;">
+                <input type="text" id="student-id" placeholder="Student ID" style="flex: 1;">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="saveStudentRecordCloud()" style="background: #2ed573; color: white; font-weight: bold; flex: 2; margin-top: 0;">
+                    ☁️ Save Student to Cloud
+                </button>
+                <button onclick="toggleStudentsListModal()" style="background: #70a1ff; color: white; font-weight: bold; flex: 1; margin-top: 0;">
+                    📋 My Students (<span id="students-count">0</span>)
+                </button>
+            </div>
+        </div>
+        
+        <div id="course-form">
+            <div class="form-group">
+                <input type="text" id="subject" placeholder="Subject Name" list="subjects-list" required>
+                <datalist id="subjects-list"></datalist>
+
+                <select id="grade">
+                    <option value="A+">A+</option>
+                    <option value="A">A</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B">B</option>
+                    <option value="B-">B-</option>
+                    <option value="C+">C+</option>
+                    <option value="C">C</option>
+                    <option value="C-">C-</option>
+                    <option value="D+">D+</option>
+                    <option value="D">D</option>
+                    <option value="D-">D-</option>
+                    <option value="F">F</option>
+                </select>
+            </div>
+            
+            <button id="add-course-btn">Add course ➕</button>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button id="save-sem-btn" onclick="saveAndClearSemester()" style="background-color: #07ffb5; color: black; font-weight: bold; flex: 2;">
+                    Save & Add New Semester
+                </button>
+                
+                <button id="reset-btn" onclick="resetCalculator()" style="background-color: #ff4d4d; color: white; font-weight: bold; flex: 1;">
+                    Reset
+                </button>
+            </div>
+        </div>
+
+        <div id="saved-semesters-box" style="margin: 20px 0; display: none;">
+            <h3 id="saved-title">Saved Semesters</h3>
+            <div id="semesters-list"></div>
+        </div>
+
+        <div id="courses-list-container">
+            <div class="course-header" id="list-header">
+                <div>Subject</div>
+                <div>Grade</div>
+                <div>Hours</div>
+                <div>Action</div>
+            </div>
+            <div id="courses-list"></div>
+        </div>
+
+        <div class="gpa-result">
+            <h2 id="final-gpa-text">Final GPA</h2>
+            <span id="gpa-display">0.00</span>
+        </div>
+    </div>
+
+    <!-- Modal للطلاب المحفوظين سحابياً -->
+    <div id="students-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 999;">
+        <div style="background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 id="modal-title" style="margin: 0; color: #0984e3;">My Students Records</h3>
+                <button onclick="toggleStudentsListModal()" style="width: auto; margin: 0; padding: 5px 12px; background: #ff4d4d; color: white;">X</button>
+            </div>
+            <div id="students-records-list"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCQcPha1bx6a9U_cIF-o9JzfSjWdnn4HQE",
+            authDomain: "gpa-advisor.firebaseapp.com",
+            projectId: "gpa-advisor",
+            storageBucket: "gpa-advisor.firebasestorage.app",
+            messagingSenderId: "980516335260",
+            appId: "1:980516335260:web:edfe4fcab586464e354759",
+            measurementId: "G-J7XMQ1LS34"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+    </script>
+
+    <script src="gpa.js"></script>
+</body>
+</html>

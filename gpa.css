@@ -1,0 +1,246 @@
+/* --- التنسيق العام --- */
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #74abe2, #5563b1); /* خلفية متدرجة مريحة للعين */
+    color: #2d3436;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+/* --- الحاوية الرئيسية (نمط زجاجي) --- */
+.container {
+    background-color: rgba(255, 255, 255, 0.9); /* شفافية بسيطة */
+    backdrop-filter: blur(10px); /* تأثير الضباب الخلفي */
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 650px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+h1 {
+    color: #0984e3;
+    margin-bottom: 30px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+/* --- مدخلات البيانات --- */
+.form-group {
+    display: flex;
+    flex-wrap: wrap; /* لجعل المدخلات تتجاوب مع الشاشات الصغيرة */
+    flex-direction: row; 
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.form-group > * {
+    flex: 1;
+    min-width: 120px; /* ضمان عدم صغر الحقول جداً على الموبايل */
+    padding: 14px;
+    border: 2px solid #dfe6e9;
+    border-radius: 12px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-group > *:focus {
+    border-color: #0080ff;
+    box-shadow: 0 0 8px rgba(0, 128, 255, 0.2);
+}
+
+/* --- الأزرار الأساسية --- */
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-top: 10px;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+#add-course-btn {
+    background-color: #6fe309;
+    color: white;
+}
+
+#add-course-btn:hover {
+    background-color: #5ab807; /* لون أغمق قليلاً عند الهوفر */
+}
+
+/* زر الحفظ */
+button[onclick="saveAndClearSemester()"] {
+    background: linear-gradient(to right, #00b894, #00cec9);
+    color: white;
+    border-radius: 12px;
+}
+
+/* --- قائمة المواد --- */
+#courses-list-container {
+    margin-top: 35px;
+}
+
+.course-header {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.course-header > div {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #636e72;
+    background-color: #f1f2f6;
+    border-radius: 8px;
+}
+
+.course-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    animation: fadeIn 0.4s ease;
+}
+
+.course-row > div {
+    flex: 1; 
+    padding: 14px;
+    background-color: white;
+    border: 1px solid #edf2f7;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- زر الحذف الصغير في صف المادة --- */
+.delete-btn {
+    background-color: #ff7675;
+    color: white;
+    padding: 8px 15px;
+    width: auto;
+    margin: 0;
+    font-size: 14px;
+}
+
+.delete-btn:hover {
+    background-color: #d63031;
+}
+
+/* --- بطاقة الترم المحفوظ --- */
+.semester-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column; /* جعل العناصر تترتب رأسياً */
+    gap: 10px;
+    transition: all 0.3s ease;
+    text-align: inherit; /* احترام اتجاه اللغة الحالي */
+}
+
+.semester-card:hover {
+    border-color: #0080ff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* تنسيق الفصلي والتراكمي */
+.semester-gpa {
+    background: #00b894;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.semester-cgpa {
+    background: #0984e3; /* تمييز لون التراكمي */
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+/* --- أزرار التعديل والحذف داخل بطاقة الترم --- */
+.btn-edit-sem, .btn-delete-sem {
+    width: auto; /* إلغاء العرض 100% */
+    padding: 8px 16px;
+    margin: 0;
+    font-size: 13px;
+    border-radius: 6px;
+}
+
+.btn-edit-sem {
+    background-color: #f39c12;
+    color: white;
+}
+
+.btn-edit-sem:hover {
+    background-color: #e67e22;
+}
+
+.btn-delete-sem {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.btn-delete-sem:hover {
+    background-color: #c0392b;
+}
+
+/* --- عرض النتيجة النهائية --- */
+.gpa-result {
+    margin-top: 35px;
+    padding: 25px;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border: none;
+    border-radius: 18px;
+}
+
+.gpa-result h2 {
+    font-size: 18px;
+    color: #1e3a8a;
+    margin-bottom: 5px;
+}
+
+.gpa-result span {
+    font-size: 42px;
+    color: #0984e3;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* --- أنيميشن عند الإضافة --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* تظبيط اتجاه اللغة (RTL & LTR) */
+body[dir="rtl"] .semester-info {
+    text-align: right;
+}
+body[dir="ltr"] .semester-info {
+    text-align: left;
+}
